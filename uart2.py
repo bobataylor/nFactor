@@ -7,7 +7,7 @@ PK_LEN = 64*8
 CONFIGURE_BYTE = 0xcc
 DECRYPT_BYTE = 0xff
 ACK_BYTE = 0xaa
-ACK_LEN = 1*8
+ACK_LEN = 1
 PK_FILE = 'nfactorkey'
 
 class Port():
