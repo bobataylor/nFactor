@@ -11,7 +11,7 @@ def establish_conn():
 
 def configure_requestnum(ser):
     print 'conf reqsum...' 
-    msg = chr(0xcc)*64
+    msg = chr(0x66)*64
     ser.write(msg)
     print 'wrote...'
     num = ser.read(size=64)

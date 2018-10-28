@@ -47,10 +47,10 @@ class Port():
                 start = time.time()
                 while (time.time() - start < timeout) or (timeout < 0):
                         tick = RPIO.input(self.clock_in)
-                        m = RPIO.input(self.rx)
                         if tick != tock:
                                 tock = tick
-                                msg += str(m)         # build binary value string
+                                time.sleep(self.wait/2.0)
+                                msg += str(RPIO.input(self.rx))         # build binary value string
                                 count += 1
                                 last = time.time()
                                 print '{} self.clock: {}, DATA: {}'.format(self.name, tick, msg[-1])
