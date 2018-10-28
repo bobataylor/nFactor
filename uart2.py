@@ -11,7 +11,7 @@ ACK_LEN = 1*8
 PK_FILE = 'nfactorkey'
 
 class Port():
-        def __init__(self, name, clock_in, clock_out, tx, rx, baud=9600):
+        def __init__(self, name, clock_in, clock_out, tx, rx, baud=500):
                 self.name = name
                 self.wait       = 1.0/float(baud)
                 self.clock_in  = clock_in
@@ -39,21 +39,20 @@ class Port():
                         
         def recv(self, bits, timeout=1):
                 print 'recving {}, {}'.format(bits, timeout)
-                #TODO get rid of leading bit and pick up trailing bit
                 msg = ''
                 count = 0
-#                tock = RPIO.input(self.clock_in)
                 tock = 1
                 start = time.time()
                 while (time.time() - start < timeout) or (timeout < 0):
-                        tick = RPIO.input(self.clock_in)
-                        if tick != tock:
-                                tock = tick
-                                time.sleep(self.wait/2.0)
-                                msg += str(RPIO.input(self.rx))         # build binary value string
+                        #tick = RPIO.input(self.clock_in)
+                        if tock != RPIO.input(self.clock_in):#tick != tock:
+                                msg += str(RPIO.input(self.rx))
+				tock = not tock
+                                #time.sleep(self.wait/2.0)
+                                #msg += str(RPIO.input(self.rx))         # build binary value string
                                 count += 1
-                                last = time.time()
-                                print '{} self.clock: {}, DATA: {}'.format(self.name, tick, msg[-1])
+                                #last = time.time()
+                                #print '{} self.clock: {}, DATA: {}'.format(self.name, tick, msg[-1])
                         if count >= bits:
                                 break   # end of message
                 print 'uart message: {}'.format(msg)
