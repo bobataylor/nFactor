@@ -82,7 +82,7 @@ def main_loop():
                                 if num < ACK_LEN:                                                               # we are the last node
                                         last.send(1)                                                            # send first count value
                                 elif val == ACK_BYTE:                                           # we are not the last node
-                                        (val, num) = next.recv(ACK_LEN, timeout=-1)     # wait on response
+                                        (val, num) = next.recv(ACK_LEN*8, timeout=-1)     # wait on response
                                         last.send(val+1)                                                        # add self to count and send
                                 else:
                                         pass    # ERROR IF THIS IS HIT
