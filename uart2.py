@@ -26,19 +26,17 @@ class Port():
                 RPIO.output(self.clock_out, 1)
                 
         def send(self, bin):
-                print 'sending {}'.format(bin)
+                print 'recving {}, {}'.format(self.name, bin)
                 bin_str = '{0:b}'.format(bin)
-                print bin_str
                 tick = 0
                 for b in bin_str:
                          RPIO.output(self.tx, int(b))
                         RPIO.output(self.clock_out, tick)
                         tick = not tick
-                        print 'CLOCK: {}, DATA: {}'.format(RPIO.input(self.clock_out), int(b))
                         time.sleep(self.wait)
                         
         def recv(self, bits, timeout=1):
-                print 'recving {}, {}'.format(bits, timeout)
+                print 'recving {}, {}'.format(self.name, timeout)
                 msg = ''
                 count = 0
                 tock = 1
@@ -50,7 +48,6 @@ class Port():
                                 count += 1
                         if count >= bits:
                                 break   # end of message
-                print 'uart message: {}'.format(msg)
                 if len(msg):
                         decoded = int(msg, 2)
                 print 'uart value: {}'.format(decoded)
