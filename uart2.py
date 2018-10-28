@@ -30,7 +30,7 @@ class Port():
                 bin_str = '{0:b}'.format(bin)
                 tick = 0
                 for b in bin_str:
-                         RPIO.output(self.tx, int(b))
+                        RPIO.output(self.tx, int(b))
                         RPIO.output(self.clock_out, tick)
                         tick = not tick
                         time.sleep(self.wait)
