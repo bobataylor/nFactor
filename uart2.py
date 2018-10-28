@@ -31,10 +31,10 @@ class Port():
                 print bin_str
                 tick = 0
                 for b in bin_str:
+                         RPIO.output(self.tx, int(b))
                         RPIO.output(self.clock_out, tick)
                         tick = not tick
                         print 'CLOCK: {}, DATA: {}'.format(RPIO.input(self.clock_out), int(b))
-                        RPIO.output(self.tx, int(b))
                         time.sleep(self.wait)
                         
         def recv(self, bits, timeout=1):
@@ -44,22 +44,17 @@ class Port():
                 tock = 1
                 start = time.time()
                 while (time.time() - start < timeout) or (timeout < 0):
-                        #tick = RPIO.input(self.clock_in)
-                        if tock != RPIO.input(self.clock_in):#tick != tock:
+                        if tock != RPIO.input(self.clock_in):
                                 msg += str(RPIO.input(self.rx))
 				tock = not tock
-                                #time.sleep(self.wait/2.0)
-                                #msg += str(RPIO.input(self.rx))         # build binary value string
                                 count += 1
-                                #last = time.time()
-                                #print '{} self.clock: {}, DATA: {}'.format(self.name, tick, msg[-1])
                         if count >= bits:
                                 break   # end of message
                 print 'uart message: {}'.format(msg)
-                #TODO
-                d = int(msg, 2)
-                print 'uart value: {}'.format(d)
-                return (d, count)
+                if len(msg):
+                        decoded = int(msg, 2)
+                print 'uart value: {}'.format(decoded)
+                return (decoded, count)
 
 def decode(req):
         if req is not None:
