@@ -2,12 +2,29 @@
 
 import os
 import array
+import binascii
 import numpy as np
 from pwmanager import enc_string, dec_bstr, gen_subkeys, cbn_subkeys
+from serialcomms import establish_conn, configure_requestnum
 
 def main_configure():
-    strs = np.loadtxt('csv/plain_passwords.csv', dtype=str, delimiter=',')
-    print strs, '\n'
+#    strs = np.loadtxt('csv/plain_passwords.csv', dtype=str, delimiter=',')
+#    print strs, '\n'
+
+    ## setup hardware connection
+    ser = establish_conn()
+    num_factors = configure_requestnum(ser)
+    print 'num: {}'.format(binascii.hexlify(num_factors))
+
+    return
+
+    ## test private key
+    pk = array.array('B', 'drewcomeback')
+    subk = gen_subkeys(pk, num_factors)
+
+    ## send sub-keys to factors
+    
+
 
 def test_encryption():
     n = 5
