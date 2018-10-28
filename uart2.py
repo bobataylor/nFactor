@@ -42,7 +42,8 @@ class Port():
                 #TODO get rid of leading bit and pick up trailing bit
                 msg = ''
                 count = 0
-                tock = RPIO.input(self.clock_in)
+#                tock = RPIO.input(self.clock_in)
+                tock = 1
                 start = time.time()
                 while (time.time() - start < timeout) or (timeout < 0):
                         tick = RPIO.input(self.clock_in)
