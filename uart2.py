@@ -79,7 +79,7 @@ def main_loop():
                                 last.send(ACK_BYTE)                                       # ack back
                                 next.send(CONFIGURE_BYTE)                                 # send forward
                                 (val, num) = next.recv(ACK_LEN, timeout=1)                # wait for ack response (1s timeout)
-                                if num < 1:                                               # we are the last node
+                                if num < ACK_LEN:                                               # we are the last node
                                         last.send(1)                                      # send first count value
                                 elif val == ACK_BYTE:                                     # we are not the last node
                                         (val, num) = next.recv(ACK_LEN, timeout=-1)       # wait on response
