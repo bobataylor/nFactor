@@ -15,6 +15,7 @@ def main_configure():
     ser = establish_conn()
     num_factors = configure_requestnum(ser)
     print 'num: {}'.format(binascii.hexlify(num_factors))
+    print 'num: {}'.format(num_factors)
 
     return
 
