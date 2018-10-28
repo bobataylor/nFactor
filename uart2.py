@@ -12,6 +12,7 @@ PK_FILE = 'nfactorkey'
 
 class Port():
         def __init__(self, name, clock_in, clock_out, tx, rx, baud=9600):
+                self.name = name
                 self.wait       = 1.0/float(baud)
                 self.clock_in  = clock_in
                 self.clock_out = clock_out
@@ -50,7 +51,7 @@ class Port():
                                 msg += str(RPIO.input(self.rx))         # build binary value string
                                 count += 1
                                 last = time.time()
-                                print 'self.clock: {}, DATA: {}'.format(tick, msg[-1])
+                                print '{} self.clock: {}, DATA: {}'.format(self.name, tick, msg[-1])
                         if count >= bits:
                                 break   # end of message
                 print 'uart message: {}'.format(msg)
@@ -69,11 +70,11 @@ def decode(req):
                 
 def main_loop():
         print 'running...'
-        next = Port(clock_in=13, 
+        next = Port(name='next', clock_in=13, 
                                 clock_out=6, 
                                 tx=19, 
                                 rx=26)
-        last = Port(clock_in=12, 
+        last = Port(name='last', clock_in=12, 
                                 clock_out=16,
                                 tx=21, 
                                 rx=20)
