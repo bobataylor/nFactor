@@ -7,7 +7,7 @@ PK_LEN = 64*8
 CONFIGURE_BYTE = 0xcc
 DECRYPT_BYTE = 0xff
 ACK_BYTE = 0xaa
-ACK_LEN = 1
+ACK_LEN = 1*8
 PK_FILE = 'nfactorkey'
 
 class Port():
@@ -72,37 +72,37 @@ def main_loop():
                                 rx=20)
         try:
                 while True:
-                        (val, num) = last.recv(BRANCH_LEN, timeout=-1)                          # receive decision byte
+                        (val, num) = last.recv(BRANCH_LEN, timeout=-1)                    # receive decision byte
                         
-                        if val == CONFIGURE_BYTE:                               # configure step
+                        if val == CONFIGURE_BYTE:                                         # configure step
                                 print 'configure byte: {}'.format(val)
-                                last.send(ACK_BYTE)                                             # ack back
-                                next.send(CONFIGURE_BYTE)                                       # send forward
-                                (val, num) = next.recv(ACK_LEN, timeout=1)      # wait for ack response (1s timeout)
-                                if num < ACK_LEN:                                                               # we are the last node
-                                        last.send(1)                                                            # send first count value
-                                elif val == ACK_BYTE:                                           # we are not the last node
-                                        (val, num) = next.recv(ACK_LEN*8, timeout=-1)     # wait on response
-                                        last.send(val+1)                                                        # add self to count and send
+                                last.send(ACK_BYTE)                                       # ack back
+                                next.send(CONFIGURE_BYTE)                                 # send forward
+                                (val, num) = next.recv(ACK_LEN, timeout=1)                # wait for ack response (1s timeout)
+                                if num < 1:                                               # we are the last node
+                                        last.send(1)                                      # send first count value
+                                elif val == ACK_BYTE:                                     # we are not the last node
+                                        (val, num) = next.recv(ACK_LEN, timeout=-1)       # wait on response
+                                        last.send(val+1)                                  # add self to count and send
                                 else:
                                         pass    # ERROR IF THIS IS HIT
                                         
                                 private_key = None
                                 while private_key is None:
-                                        (val, num) = last.recv(PK_LEN, timeout=-1)      # wait for private key
-                                        private_key = val                                                       # store private key
-                                        last.send(ACK_BYTE)                                                     # ack back
-                                        next.send(private_key)                                          # send forward
-                                        (val, num) = next.recv(ACK_LEN, timeout=1)      # wait for ack response (1s timeout)
-                                        if num < ACK_LEN:                                                       # we are the last node
-                                                fp = open(PK_FILE, 'w')                                         # claim private sub-key
-                                                fp.write(private_key)                                           #
+                                        (val, num) = last.recv(PK_LEN, timeout=-1)              # wait for private key
+                                        private_key = val                                       # store private key
+                                        last.send(ACK_BYTE)                                     # ack back
+                                        next.send(private_key)                                  # send forward
+                                        (val, num) = next.recv(ACK_LEN, timeout=1)              # wait for ack response (1s timeout)
+                                        if num < ACK_LEN:                                       # we are the last node
+                                                fp = open(PK_FILE, 'w')                         # claim private sub-key
+                                                fp.write(private_key)                           #
                                                 fp.close()                                                                      #
-                                                last.send(private_key)                                          # signal finished
-                                        elif val == ACK_BYTE:                                           # we are not the last node
-                                                private_key = None                                                      # disown private key
+                                                last.send(private_key)                          # signal finished
+                                        elif val == ACK_BYTE:                                   # we are not the last node
+                                                private_key = None                              # disown private key
                                                 (val, num) = next.recv(PK_LEN, timeout=-1)      # wait on response
-                                                last.send(val)                                                          # send back up the chain
+                                                last.send(val)                                  # send back up the chain
                                         else:
                                                 pass    # ERROR IF THIS IS HIT
                         
