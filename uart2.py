@@ -27,7 +27,7 @@ class Port():
                 
         def send(self, bin):
                 print '{}: Sent {}'.format(self.name, bin)
-                bin_str = '{0:b}'.format(bin)
+                bin_str = '{0:b}'.format(bin).zfill(8)
                 tick = 0
                 for b in bin_str:
                         RPIO.output(self.tx, int(b))
@@ -81,7 +81,8 @@ def main_loop():
                                 (val, num) = next.recv(ACK_LEN, timeout=1)                # wait for ack response (1s timeout)
                                 if num < ACK_LEN:                                               # we are the last node
                                         last.send(1)                                      # send first count value
-                                elif val == ACK_BYTE:                                     # we are not the last node
+                                elif val == ACK_BYTE:  
+                                        print("Waiting for chain")                                   # we are not the last node
                                         (val, num) = next.recv(ACK_LEN, timeout=-1)       # wait on response
                                         last.send(val+1)                                  # add self to count and send
                                 else:
